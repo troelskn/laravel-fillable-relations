@@ -1,0 +1,20 @@
+{
+    "name": "troelskn/laravel-fillable-relations",
+    "description": "Provides HasFillableRelations trait to Eloquent models",
+    "type": "library",
+    "require": {
+        "illuminate/database": "^5.4"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Troels Knak-Nielsen",
+            "email": "troelskn@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "LaravelFillableRelations\\": "src/"
+        }
+    }
+}
