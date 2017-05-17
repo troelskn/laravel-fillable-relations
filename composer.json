@@ -3,7 +3,7 @@
     "description": "Provides HasFillableRelations trait to Eloquent models",
     "type": "library",
     "require": {
-        "illuminate/database": "^5.4"
+        "illuminate/database": "^5.3"
     },
     "license": "MIT",
     "authors": [
