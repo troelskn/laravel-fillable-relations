@@ -37,11 +37,11 @@ trait HasFillableRelations
      *
      * @var array
      */
-    protected $fillable_relations = [];
+    // protected $fillable_relations = [];
 
     public function fillableRelations()
     {
-        return $this->fillable_relations;
+        return isset($this->fillable_relations) ? $this->fillable_relations : [];
     }
 
     public function extractFillableRelations(array $attributes)
