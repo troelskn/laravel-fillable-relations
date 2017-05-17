@@ -66,7 +66,7 @@ trait HasFillableRelations
                 $entity = $klass::where($fillableData)->firstOrFail();
                 $relation->associate($entity);
             } elseif ($relation instanceof HasOne) {
-                $entity = $klass::firstOrCreate($fillable_data);
+                $entity = $klass::firstOrCreate($fillableData);
                 $qualified_foreign_key = $relation->getForeignKey();
                 list($table, $foreign_key) = explode('.', $qualified_foreign_key);
                 $qualified_local_key_name = $relation->getQualifiedParentKeyName();
