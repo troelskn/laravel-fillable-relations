@@ -2,9 +2,6 @@
     "name": "troelskn/laravel-fillable-relations",
     "description": "Provides HasFillableRelations trait to Eloquent models",
     "type": "library",
-    "require": {
-        "illuminate/database": "^5.3"
-    },
     "license": "MIT",
     "authors": [
         {
@@ -12,9 +9,26 @@
             "email": "troelskn@gmail.com"
         }
     ],
+    "require": {
+        "illuminate/database": "^5.3"
+    },
     "autoload": {
         "psr-4": {
             "LaravelFillableRelations\\": "src/"
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~5.7",
+        "orchestra/database": "~3.4",
+        "orchestra/testbench": "^3.4",
+        "mockery/mockery": "^0.9.4"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LaravelFillableRelations\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
     }
 }
