@@ -103,4 +103,13 @@ trait HasFillableRelations
         $this->fillRelations($fillableRelationsData);
         return $this;
     }
+
+    public static function create(array $attributes = [])
+    {
+        list($fillableRelationsData, $attributes) = (new static)->extractFillableRelations($attributes);
+        $model = new static($attributes);
+        $model->fillRelations($fillableRelationsData);
+        $model->save();
+        return $model;
+    }
 }
