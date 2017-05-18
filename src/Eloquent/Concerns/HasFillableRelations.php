@@ -2,6 +2,7 @@
 
 namespace LaravelFillableRelations\Eloquent\Concerns;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -63,10 +64,18 @@ trait HasFillableRelations
             $relation = $this->{$camelCaseName}();
             $klass = get_class($relation->getRelated());
             if ($relation instanceof BelongsTo) {
-                $entity = $klass::where($fillableData)->firstOrFail();
+                if ($fillableData instanceof Model) {
+                    $entity = $fillableData;
+                } else {
+                    $entity = $klass::where($fillableData)->firstOrFail();
+                }
                 $relation->associate($entity);
             } elseif ($relation instanceof HasOne) {
-                $entity = $klass::firstOrCreate($fillableData);
+                if ($fillableData instanceof Model) {
+                    $entity = $fillableData;
+                } else {
+                    $entity = $klass::firstOrCreate($fillableData);
+                }
                 $qualified_foreign_key = $relation->getForeignKey();
                 list($table, $foreign_key) = explode('.', $qualified_foreign_key);
                 $qualified_local_key_name = $relation->getQualifiedParentKeyName();
@@ -78,7 +87,11 @@ trait HasFillableRelations
                 }
                 $relation->delete();
                 foreach ($fillableData as $row) {
-                    $entity = new $klass($row);
+                    if ($row instanceof Model) {
+                        $entity = $row;
+                    } else {
+                        $entity = new $klass($row);
+                    }
                     $relation->save($entity);
                 }
             } elseif ($relation instanceof BelongsToMany) {
@@ -87,7 +100,11 @@ trait HasFillableRelations
                 }
                 $relation->detach();
                 foreach ($fillableData as $row) {
-                    $entity = $klass::where($row)->firstOrFail();
+                    if ($row instanceof Model) {
+                        $entity = $row;
+                    } else {
+                        $entity = $klass::where($row)->firstOrFail();
+                    }
                     $relation->attach($entity);
                 }
             } else {

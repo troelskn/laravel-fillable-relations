@@ -54,4 +54,18 @@ class BaseTests extends TestCase
         $vehicle = $vehicle->fresh();
         $this->assertEquals(1, count($vehicle->wheels->toArray()));
     }
+
+    public function testCreateVehicleWithModelInstance()
+    {
+        $vehicle = Vehicle::create(
+            [
+                'name' => 'My nice car',
+                'wheels' => [
+                    new Wheel(['size' => 24])
+                ]
+            ]
+        );
+        $vehicle = $vehicle->fresh();
+        $this->assertEquals(1, count($vehicle->wheels->toArray()));
+    }
 }
