@@ -57,56 +57,20 @@ trait HasFillableRelations
         return [$fillableRelationsData, $attributes];
     }
 
-    public function fillRelations(array $fillableRelationsData)
+    public function fillRelations(array $relations)
     {
-        foreach ($fillableRelationsData as $relationName => $fillableData) {
+        foreach ($relations as $relationName => $attributes) {
             $camelCaseName = camel_case($relationName);
             $relation = $this->{$camelCaseName}();
-            $klass = get_class($relation->getRelated());
+
             if ($relation instanceof BelongsTo) {
-                if ($fillableData instanceof Model) {
-                    $entity = $fillableData;
-                } else {
-                    $entity = $klass::where($fillableData)->firstOrFail();
-                }
-                $relation->associate($entity);
+                $this->fillBelongsToRelation($relation, $attributes);
             } elseif ($relation instanceof HasOne) {
-                if ($fillableData instanceof Model) {
-                    $entity = $fillableData;
-                } else {
-                    $entity = $klass::firstOrCreate($fillableData);
-                }
-                $qualified_foreign_key = $relation->getForeignKey();
-                list($table, $foreign_key) = explode('.', $qualified_foreign_key);
-                $qualified_local_key_name = $relation->getQualifiedParentKeyName();
-                list($table, $local_key) = explode('.', $qualified_local_key_name);
-                $this->{$local_key} = $entity->{$foreign_key};
+                $this->fillHasOneRelation($relation, $attributes);
             } elseif ($relation instanceof HasMany) {
-                if (!$this->exists) {
-                    $this->save();
-                }
-                $relation->delete();
-                foreach ($fillableData as $row) {
-                    if ($row instanceof Model) {
-                        $entity = $row;
-                    } else {
-                        $entity = new $klass($row);
-                    }
-                    $relation->save($entity);
-                }
+                $this->fillHasManyRelation($relation, $attributes);
             } elseif ($relation instanceof BelongsToMany) {
-                if (!$this->exists) {
-                    $this->save();
-                }
-                $relation->detach();
-                foreach ($fillableData as $row) {
-                    if ($row instanceof Model) {
-                        $entity = $row;
-                    } else {
-                        $entity = $klass::where($row)->firstOrFail();
-                    }
-                    $relation->attach($entity);
-                }
+                $this->fillBelongsToManyRelation($relation, $attributes);
             } else {
                 throw new RuntimeException("Unknown or unfillable relation type $relationName");
             }
@@ -115,18 +79,105 @@ trait HasFillableRelations
 
     public function fill(array $attributes)
     {
-        list($fillableRelationsData, $attributes) = $this->extractFillableRelations($attributes);
+        list($relations, $attributes) = $this->extractFillableRelations($attributes);
+
         parent::fill($attributes);
-        $this->fillRelations($fillableRelationsData);
+
+        $this->fillRelations($relations);
+
         return $this;
     }
 
     public static function create(array $attributes = [])
     {
-        list($fillableRelationsData, $attributes) = (new static)->extractFillableRelations($attributes);
+        list($relations, $attributes) = (new static)->extractFillableRelations($attributes);
+
         $model = new static($attributes);
-        $model->fillRelations($fillableRelationsData);
+        $model->fillRelations($relations);
         $model->save();
+
         return $model;
+    }
+
+    /**
+     * @param BelongsTo $relation
+     * @param array $attributes
+     */
+    public function fillBelongsToRelation(BelongsTo $relation, array $attributes)
+    {
+        $klass = get_class($relation->getRelated());
+
+        if ($attributes instanceof Model) {
+            $entity = $attributes;
+        } else {
+            $entity = $klass::where($attributes)->firstOrFail();
+        }
+        $relation->associate($entity);
+    }
+
+    /**
+     * @param HasOne $relation
+     * @param array $attributes
+     */
+    public function fillHasOneRelation(HasOne $relation, array $attributes)
+    {
+        $klass = get_class($relation->getRelated());
+
+        if ($attributes instanceof Model) {
+            $entity = $attributes;
+        } else {
+            $entity = $klass::firstOrCreate($attributes);
+        }
+
+        $qualified_foreign_key = $relation->getForeignKey();
+        list($table, $foreign_key) = explode('.', $qualified_foreign_key);
+        $qualified_local_key_name = $relation->getQualifiedParentKeyName();
+        list($table, $local_key) = explode('.', $qualified_local_key_name);
+        $this->{$local_key} = $entity->{$foreign_key};
+    }
+
+    /**
+     * @param HasMany $relation
+     * @param array $attributes
+     */
+    public function fillHasManyRelation(HasMany $relation, array $attributes)
+    {
+        $klass = get_class($relation->getRelated());
+
+        if (!$this->exists) {
+            $this->save();
+        }
+        $relation->delete();
+        foreach ($attributes as $row) {
+            if ($row instanceof Model) {
+                $entity = $row;
+            } else {
+                $entity = new $klass($row);
+            }
+            $relation->save($entity);
+        }
+    }
+
+    /**
+     * @param BelongsToMany $relation
+     * @param array $attributes
+     */
+    public function fillBelongsToManyRelation(BelongsToMany $relation, array $attributes)
+    {
+        $klass = get_class($relation->getRelated());
+
+        if (!$this->exists) {
+            $this->save();
+        }
+
+        $relation->detach();
+        foreach ($attributes as $row) {
+            if ($row instanceof Model) {
+                $entity = $row;
+            } else {
+                $entity = $klass::where($row)->firstOrFail();
+            }
+            $relation->attach($entity);
+        }
     }
 }
