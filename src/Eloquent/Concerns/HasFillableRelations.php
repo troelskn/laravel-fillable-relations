@@ -103,11 +103,10 @@ trait HasFillableRelations
      */
     public function fillBelongsToRelation(BelongsTo $relation, array $attributes)
     {
-        if ($attributes instanceof Model) {
-            $entity = $attributes;
-        } else {
-            $klass = get_class($relation->getRelated());
-            $entity = $klass::where($attributes)->firstOrFail();
+        $entity = $attributes;
+        if (!$attributes instanceof Model) {
+            $entity = $relation->getRelated()
+                ->where($attributes)->firstOrFail();
         }
 
         $relation->associate($entity);
@@ -119,18 +118,15 @@ trait HasFillableRelations
      */
     public function fillHasOneRelation(HasOne $relation, array $attributes)
     {
-        if ($attributes instanceof Model) {
-            $entity = $attributes;
-        } else {
-            $klass = get_class($relation->getRelated());
-            $entity = $klass::firstOrCreate($attributes);
+        $related = $attributes;
+        if (!$attributes instanceof Model) {
+            $related = $relation->getRelated()->firstOrCreate($attributes);
         }
 
-        $qualified_foreign_key = $relation->getForeignKey();
-        list($table, $foreign_key) = explode('.', $qualified_foreign_key);
-        $qualified_local_key_name = $relation->getQualifiedParentKeyName();
-        list($table, $local_key) = explode('.', $qualified_local_key_name);
-        $this->{$local_key} = $entity->{$foreign_key};
+        $foreign_key = str_after($relation->getForeignKey(), '.');
+        $local_key = str_after($relation->getQualifiedParentKeyName(), '.');
+
+        $this->{$local_key} = $related->{$foreign_key};
     }
 
     /**
@@ -145,15 +141,12 @@ trait HasFillableRelations
 
         $relation->delete();
 
-        foreach ($attributes as $row) {
-            if ($row instanceof Model) {
-                $entity = $row;
-            } else {
-                $klass = get_class($relation->getRelated());
-                $entity = new $klass($row);
+        foreach ($attributes as $related) {
+            if (!$related instanceof Model) {
+                $related = $relation->getRelated()->newInstance($related);
             }
 
-            $relation->save($entity);
+            $relation->save($related);
         }
     }
 
@@ -169,15 +162,13 @@ trait HasFillableRelations
 
         $relation->detach();
 
-        foreach ($attributes as $row) {
-            if ($row instanceof Model) {
-                $entity = $row;
-            } else {
-                $klass = get_class($relation->getRelated());
-                $entity = $klass::where($row)->firstOrFail();
+        foreach ($attributes as $related) {
+            if (!$related instanceof Model) {
+                $related = $relation->getRelated()
+                    ->where($related)->firstOrFail();
             }
 
-            $relation->attach($entity);
+            $relation->attach($related);
         }
     }
 }
