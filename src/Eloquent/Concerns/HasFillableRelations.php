@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use RuntimeException;
+use ReflectionObject;
 
 /**
  * Mix this in to your model class to enable fillable relations.
@@ -65,9 +66,9 @@ trait HasFillableRelations
         foreach ($relations as $relationName => $attributes) {
             $relation = $this->{camel_case($relationName)}();
 
-            $relationType = (new \ReflectionObject($relation))->getShortName();
-
-            if (!method_exists($this, $method = "fill{$relationType}Relation")) {
+            $relationType = (new ReflectionObject($relation))->getShortName();
+            $method = "fill{$relationType}Relation";
+            if (!method_exists($this, $method)) {
                 throw new RuntimeException("Unknown or unfillable relation type {$relationName}");
             }
 
