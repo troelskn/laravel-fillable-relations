@@ -68,4 +68,40 @@ class BaseTests extends TestCase
         $vehicle = $vehicle->fresh();
         $this->assertEquals(1, count($vehicle->wheels->toArray()));
     }
+
+    public function testFillBelongsToWhenForeignKeyDoesntMatchRelationName()
+    {
+        $vehicle = Vehicle::create(
+            [
+                'name' => 'My nice car',
+            ]
+        );
+        Wheel::create(
+            [
+                'car' => [
+                    'name' => 'My nice car',
+                ],
+                'size' => 24,
+            ]
+        );
+        $vehicle = $vehicle->fresh();
+        $this->assertEquals(1, count($vehicle->wheels->toArray()));
+    }
+
+    public function testFillBelongsToWithModelInstance()
+    {
+        $vehicle = Vehicle::create(
+            [
+                'name' => 'My nice car',
+            ]
+        );
+        $wheel = Wheel::create(
+            [
+                'car' => $vehicle,
+                'size' => 24,
+            ]
+        );
+        $vehicle = $vehicle->fresh();
+        $this->assertEquals(1, count($vehicle->wheels->toArray()));
+    }
 }
