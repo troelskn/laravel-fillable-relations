@@ -100,9 +100,9 @@ trait HasFillableRelations
 
     /**
      * @param BelongsTo $relation
-     * @param array $attributes
+     * @param array|Model $attributes
      */
-    public function fillBelongsToRelation(BelongsTo $relation, array $attributes)
+    public function fillBelongsToRelation(BelongsTo $relation, $attributes)
     {
         $entity = $attributes;
         if (!$attributes instanceof Model) {
@@ -115,9 +115,9 @@ trait HasFillableRelations
 
     /**
      * @param HasOne $relation
-     * @param array $attributes
+     * @param array|Model $attributes
      */
-    public function fillHasOneRelation(HasOne $relation, array $attributes)
+    public function fillHasOneRelation(HasOne $relation, $attributes)
     {
         $related = $attributes;
         if (!$attributes instanceof Model) {
