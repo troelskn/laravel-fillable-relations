@@ -8,7 +8,7 @@ jobs:
     docker:
       # specify the version you desire here
       - image: circleci/php:7.1-cli
-      
+
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
@@ -32,6 +32,7 @@ jobs:
           paths:
             - ./vendor
           key: v1-dependencies-{{ checksum "composer.json" }}
-        
+
       # run tests!
-      - run: vendor/bin/phpunit
+      # - run: vendor/bin/phpunit
+      - run: bash -c 'for FILE in $(ls composer-*.json) ; do echo "Running tests for $FILE" ; rm -f -- composer.lock ; rm -f -- composer.json ; cp $FILE composer.json && composer install -n --prefer-dist && vendor/bin/phpunit || exit $? ; done ; exit 0'
