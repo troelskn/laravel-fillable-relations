@@ -20,9 +20,9 @@ class Question extends Model
         return $this->belongsTo(Test::class, 'test_id');
     }
 
-    function getAttributes()
+    function attributesToArray()
     {
-        $attributes = parent::getAttributes();
+        $attributes = parent::attributesToArray();
         $attributes['options'] = $this->options;
         return $attributes;
     }

@@ -37,7 +37,7 @@ class IamfaizTests extends TestCase
             ]
         ];
         $test = Test::create($data);
-        $data2 = $test->getAttributes();
+        $data2 = $test->fresh()->toArray();
         $this->assertEquals($data['name'], $data2['name']);
         $this->assertEquals($data['preparation'], $data2['preparation']);
         $this->assertEquals(count($data['questions']), count($data2['questions']));

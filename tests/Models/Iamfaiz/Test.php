@@ -11,16 +11,10 @@ class Test extends Model
     public $timestamps = false;
     protected $fillable = ['name', 'preparation'];
     protected $fillable_relations = ['questions'];
+    protected $with = ['questions'];
 
     function questions()
     {
         return $this->hasMany(Question::class, 'test_id');
-    }
-
-    function getAttributes()
-    {
-        $attributes = parent::getAttributes();
-        $attributes['questions'] = $this->questions->map->getAttributes()->toArray();
-        return $attributes;
     }
 }
