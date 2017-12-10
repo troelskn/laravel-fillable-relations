@@ -145,7 +145,12 @@ trait HasFillableRelations
 
         foreach ($attributes as $related) {
             if (!$related instanceof Model) {
-                $related[$relation->getForeignKeyName()] = $relation->getParentKey();
+                if (method_exists($relation, 'getHasCompareKey')) { // Laravel 5.3
+                    $foreign_key = explode('.', $relation->getHasCompareKey());
+                    $related[$foreign_key[1]] = $relation->getParent()->getKey();
+                } else {  // Laravel 5.5+
+                    $related[$relation->getForeignKeyName()] = $relation->getParentKey();
+                }
                 $related = $relation->getRelated()->newInstance($related);
                 $related->exists = $related->getKey() != null;
             }
