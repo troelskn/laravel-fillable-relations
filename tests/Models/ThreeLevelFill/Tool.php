@@ -13,6 +13,6 @@ class Tool extends Model
 
     public function fields()
     {
-        return $this->hasMany(static::class . 'Field');
+        return $this->hasMany(ToolField::class);
     }
 }

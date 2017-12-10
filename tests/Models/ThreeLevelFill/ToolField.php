@@ -9,10 +9,15 @@ class ToolField extends Model
     use HasFillableRelations;
     protected $table = 'threelevelfill_fields';
     protected $fillable = ['name'];
-    protected $fillable_relations = ['choices'];
+    protected $fillable_relations = ['tool', 'choices'];
+
+    function tool()
+    {
+        return $this->belongsTo(Tool::class, 'tool_id');
+    }
 
     public function choices()
     {
-        return $this->hasMany(static::class . 'Choice');
+        return $this->hasMany(ToolFieldChoice::class);
     }
 }
