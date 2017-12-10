@@ -13,6 +13,6 @@ class Tool extends Model
 
     public function fields()
     {
-        return $this->hasMany(ToolField::class);
+        return $this->hasMany(ToolField::class, 'tool_id');
     }
 }

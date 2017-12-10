@@ -8,7 +8,7 @@ class ToolFieldChoice extends Model
 {
     use HasFillableRelations;
     protected $table = 'threelevelfill_choices';
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'field_id'];
     protected $fillable_relations = ['field'];
 
     function field()

@@ -8,7 +8,7 @@ class ToolField extends Model
 {
     use HasFillableRelations;
     protected $table = 'threelevelfill_fields';
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'tool_id'];
     protected $fillable_relations = ['tool', 'choices'];
 
     function tool()
@@ -18,6 +18,6 @@ class ToolField extends Model
 
     public function choices()
     {
-        return $this->hasMany(ToolFieldChoice::class);
+        return $this->hasMany(ToolFieldChoice::class, 'field_id', 'id');
     }
 }
