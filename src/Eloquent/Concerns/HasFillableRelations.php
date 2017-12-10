@@ -72,8 +72,7 @@ trait HasFillableRelations
             if (!method_exists($this, $method)) {
                 throw new RuntimeException("Unknown or unfillable relation type {$relationName}");
             }
-
-            $this->{$method}($relation, $attributes);
+            $this->{$method}($relation, $attributes, $relationName);
         }
     }
 
@@ -103,7 +102,7 @@ trait HasFillableRelations
      * @param BelongsTo $relation
      * @param array|Model $attributes
      */
-    public function fillBelongsToRelation(BelongsTo $relation, $attributes)
+    public function fillBelongsToRelation(BelongsTo $relation, $attributes, $relationName)
     {
         $entity = $attributes;
         if (!$attributes instanceof Model) {
@@ -118,7 +117,7 @@ trait HasFillableRelations
      * @param HasOne $relation
      * @param array|Model $attributes
      */
-    public function fillHasOneRelation(HasOne $relation, $attributes)
+    public function fillHasOneRelation(HasOne $relation, $attributes, $relationName)
     {
         $related = $attributes;
         if (!$attributes instanceof Model) {
@@ -135,17 +134,25 @@ trait HasFillableRelations
      * @param HasMany $relation
      * @param array $attributes
      */
-    public function fillHasManyRelation(HasMany $relation, array $attributes)
+    public function fillHasManyRelation(HasMany $relation, array $attributes, $relationName)
     {
         if (!$this->exists) {
             $this->save();
+            $relation = $this->{camel_case($relationName)}();
         }
 
         $relation->delete();
 
         foreach ($attributes as $related) {
             if (!$related instanceof Model) {
+                if (method_exists($relation, 'getHasCompareKey')) { // Laravel 5.3
+                    $foreign_key = explode('.', $relation->getHasCompareKey());
+                    $related[$foreign_key[1]] = $relation->getParent()->getKey();
+                } else {  // Laravel 5.5+
+                    $related[$relation->getForeignKeyName()] = $relation->getParentKey();
+                }
                 $related = $relation->getRelated()->newInstance($related);
+                $related->exists = $related->getKey() != null;
             }
 
             $relation->save($related);
@@ -156,10 +163,11 @@ trait HasFillableRelations
      * @param BelongsToMany $relation
      * @param array $attributes
      */
-    public function fillBelongsToManyRelation(BelongsToMany $relation, array $attributes)
+    public function fillBelongsToManyRelation(BelongsToMany $relation, array $attributes, $relationName)
     {
         if (!$this->exists) {
             $this->save();
+            $relation = $this->{camel_case($relationName)}();
         }
 
         $relation->detach();
@@ -178,7 +186,7 @@ trait HasFillableRelations
      * @param MorphTo $relation
      * @param array|Model $attributes
      */
-    public function fillMorphToRelation(MorphTo $relation, $attributes)
+    public function fillMorphToRelation(MorphTo $relation, $attributes, $relationName)
     {
         $entity = $attributes;
 
