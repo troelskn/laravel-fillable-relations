@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use RuntimeException;
 use ReflectionObject;
 
@@ -171,5 +172,20 @@ trait HasFillableRelations
 
             $relation->attach($related);
         }
+    }
+
+    /**
+     * @param MorphTo $relation
+     * @param array|Model $attributes
+     */
+    public function fillMorphToRelation(MorphTo $relation, $attributes)
+    {
+        $entity = $attributes;
+
+        if (! $entity instanceof Model) {
+            $entity = $relation->getRelated()->firstOrCreate($entity);
+        }
+
+        $relation->associate($entity);
     }
 }
