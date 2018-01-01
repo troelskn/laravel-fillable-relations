@@ -5,18 +5,8 @@ This library provides a trait for mixing in to an Eloquent Model. Doing so will 
 
 To use, first require in your composer file:
 
-```js
-{
-    "require": {
-        "troelskn/laravel-fillable-relations": "dev-master"
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@github.com:troelskn/laravel-fillable-relations.git"
-        }
-    ]
-}
+```
+composer require troelskn/laravel-fillable-relations
 ```
 
 Then, in your code:
