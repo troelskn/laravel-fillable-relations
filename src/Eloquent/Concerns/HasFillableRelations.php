@@ -119,22 +119,23 @@ trait HasFillableRelations
      */
     public function fillHasOneRelation(HasOne $relation, $attributes, $relationName)
     {
-        $related = $attributes;
-        if (!$attributes instanceof Model) {
-            $related = $relation->getRelated()->firstOrCreate($attributes);
-        }
-
-        $foreign_key = str_after($relation->getForeignKey(), '.');
-        $local_key = str_after($relation->getQualifiedParentKeyName(), '.');
-
-        $this->{$local_key} = $related->{$foreign_key};
+        $this->fillHasOneOrManyRelation($relation, [$attributes], $relationName);
     }
-
+    
     /**
      * @param HasMany $relation
      * @param array $attributes
      */
     public function fillHasManyRelation(HasMany $relation, array $attributes, $relationName)
+    {
+        $this->fillHasOneOrManyRelation($relation, $attributes, $relationName);
+    }
+
+    /**
+     * @param HasOneOrMany $relation
+     * @param array $attributes
+     */
+    private function fillHasOneOrManyRelation($relation, array $attributes, $relationName)
     {
         if (!$this->exists) {
             $this->save();
