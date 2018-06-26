@@ -9,7 +9,7 @@ class Vehicle extends Model
     use HasFillableRelations;
     public $timestamps = false;
     protected $fillable = ['name'];
-    protected $fillable_relations = ['wheels', 'fancyWheels'];
+    protected $fillable_relations = ['wheels', 'fancyWheels', 'engine'];
 
     function wheels()
     {
@@ -24,5 +24,10 @@ class Vehicle extends Model
             'vehicle_id',
             'wheel_id'
         )->withPivot(['colour', 'gold_plated', 'silver_plated']);
+    }
+
+    function engine()
+    {
+        return $this->hasOne(Engine::class);
     }
 }

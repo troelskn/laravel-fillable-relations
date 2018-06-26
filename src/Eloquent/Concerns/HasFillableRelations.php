@@ -121,7 +121,7 @@ trait HasFillableRelations
     {
         $this->fillHasOneOrManyRelation($relation, [$attributes], $relationName);
     }
-    
+
     /**
      * @param HasMany $relation
      * @param array $attributes
