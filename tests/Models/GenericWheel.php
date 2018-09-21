@@ -17,7 +17,6 @@ class GenericWheel extends Model
     use HasFillableRelations;
 
     protected $table = 'generic_wheel';
-
     public $timestamps = false;
     protected $fillable = ['size'];
     protected $fillable_relations = ['fancyCar'];
@@ -26,6 +25,5 @@ class GenericWheel extends Model
     {
         return $this->belongsTo(Vehicle::class, 'vehicle_id');
     }
-
-
 }
+

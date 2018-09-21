@@ -54,7 +54,7 @@ class PivotFieldFillTest extends TestCase
             );
 
             foreach ($this->pivotColumns as $pivotColumn) {
-                $pivotField = $this->getPivotField($fancyWheel['pivot'], $pivotColumn);
+                $pivotField = $this->getPivotField($fancyWheel, $pivotColumn);
                 if ($pivotField) {
                     $origPivotField = $fancyWheelsArr[$fancyWheelKey]['pivot'][$pivotColumn];
                     $this->assertEquals(
@@ -68,7 +68,8 @@ class PivotFieldFillTest extends TestCase
 
     private function getPivotField($pivot, $key)
     {
-        return isset($pivot[$key]) ?? false;
+        $p = 'pivot';
+        return isset($pivot[$p][$key]) ? $pivot[$p][$key] : false;
     }
 
     private function mockGenericWheels()

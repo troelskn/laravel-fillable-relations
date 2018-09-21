@@ -16,7 +16,6 @@ class Vehicle extends Model
         return $this->hasMany(Wheel::class);
     }
 
-
     function fancyWheels()
     {
         return $this->belongsToMany(
