@@ -15,4 +15,6 @@ class Wheel extends Model
     {
         return $this->belongsTo(Vehicle::class, 'vehicle_id');
     }
+
+
 }

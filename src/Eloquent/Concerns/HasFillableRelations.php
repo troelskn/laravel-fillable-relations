@@ -173,7 +173,7 @@ trait HasFillableRelations
         $relation->detach();
         $pivotColumns = [];
         foreach ($attributes as $related) {
-            if (isset($related['pivot'])) {
+            if (isset($related['pivot']) && !is_string($related['pivot'])) {
                 $pivotColumns = $related['pivot'];
                 unset($related['pivot']);
             }
