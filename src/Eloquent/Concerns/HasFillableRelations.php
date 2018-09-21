@@ -171,14 +171,18 @@ trait HasFillableRelations
         }
 
         $relation->detach();
-
+        $pivotColumns = [];
         foreach ($attributes as $related) {
+            if (isset($related['pivot'])) {
+                $pivotColumns = $related['pivot'];
+                unset($related['pivot']);
+            }
             if (!$related instanceof Model) {
                 $related = $relation->getRelated()
                     ->where($related)->firstOrFail();
             }
 
-            $relation->attach($related);
+            $relation->attach($related, $pivotColumns);
         }
     }
 
