@@ -8,7 +8,6 @@
 
 namespace LaravelFillableRelations\Tests;
 
-
 use LaravelFillableRelations\Tests\Models\GenericWheel;
 use LaravelFillableRelations\Tests\Models\Vehicle;
 
@@ -55,14 +54,21 @@ class PivotFieldFillTest extends TestCase
             );
 
             foreach ($this->pivotColumns as $pivotColumn) {
-                if (isset($fancyWheel['pivot'][$pivotColumn])) {
+                $pivotField = $this->getPivotField($fancyWheel['pivot'], $pivotColumn);
+                if ($pivotField) {
+                    $origPivotField = $fancyWheelsArr[$fancyWheelKey]['pivot'][$pivotColumn];
                     $this->assertEquals(
-                        $fancyWheelsArr[$fancyWheelKey]['pivot'][$pivotColumn],
-                        $fancyWheel['pivot'][$pivotColumn]
+                        $pivotField,
+                        $origPivotField
                     );
                 }
             }
         }
+    }
+
+    private function getPivotField($pivot, $key)
+    {
+        return isset($pivot[$key]) ?? false;
     }
 
     private function mockGenericWheels()
