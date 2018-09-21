@@ -1,17 +1,17 @@
 <?php
-
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-
 /**
  * Created by PhpStorm.
  * User: alexandrucalin
  * Date: 9/21/18
  * Time: 17:04
  */
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+
 class CreateGenericWheel extends Migration
 {
-    protected $table = 'generic_wheel';
+    private $table = 'generic_wheel';
 
     public function up()
     {

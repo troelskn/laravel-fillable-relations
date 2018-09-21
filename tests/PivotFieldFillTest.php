@@ -14,21 +14,20 @@ use LaravelFillableRelations\Tests\Models\Vehicle;
 class PivotFieldFillTest extends TestCase
 {
     private $fancyCarData = [
-        'name' => 'Circus Themed Car',
+        'name' => 'Circus Theme Ride',
         'fancyWheels' => [
-            0 => [
+            [
                 'size' => 10,
                 'pivot' => ['colour' => 'red', 'gold_plated' => 0]
             ],
-
-            1 => [
+            [
                 'size' => 10,
                 'pivot' => ['colour' => 'pink', 'silver_plated' => 1]
             ],
-            2 => [
+            [
                 'size' => 10,
             ],
-            3 => [
+            [
                 'size' => 10,
                 'pivot' => ['colour' => 'yellow', 'gold_plated' => 1]
             ]
@@ -66,10 +65,10 @@ class PivotFieldFillTest extends TestCase
         }
     }
 
-    private function getPivotField($pivot, $key)
+    private function getPivotField($model, $key)
     {
         $p = 'pivot';
-        return isset($pivot[$p][$key]) ? $pivot[$p][$key] : false;
+        return isset($model[$p][$key]) ? $model[$p][$key] : false;
     }
 
     private function mockGenericWheels()

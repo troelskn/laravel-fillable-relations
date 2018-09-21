@@ -1,11 +1,17 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: alexandrucalin
+ * Date: 9/21/18
+ * Time: 17:04
+ */
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 class CreateVehiclesWheels extends Migration
 {
-    protected $table = 'vehicles_wheels';
+    private $table = 'vehicles_wheels';
 
     public function up()
     {

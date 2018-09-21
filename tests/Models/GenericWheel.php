@@ -1,16 +1,15 @@
 <?php
-namespace LaravelFillableRelations\Tests\Models;
-
-use Illuminate\Database\Eloquent\Model;
-use LaravelFillableRelations\Eloquent\Concerns\HasFillableRelations;
-use LaravelFillableRelations\Tests\Models\Vehicle;
-
 /**
  * Created by PhpStorm.
  * User: alexandrucalin
  * Date: 9/21/18
  * Time: 17:07
  */
+namespace LaravelFillableRelations\Tests\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use LaravelFillableRelations\Eloquent\Concerns\HasFillableRelations;
+use LaravelFillableRelations\Tests\Models\Vehicle;
 
 class GenericWheel extends Model
 {
