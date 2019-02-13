@@ -8,7 +8,7 @@ class Forum extends Model
 {
     protected $table = 'poly_forums';
     use HasFillableRelations;
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable_relations = ['title'];
 
@@ -22,7 +22,7 @@ class TitleTranslation extends Model
 {
     protected $table = 'poly_title_translations';
     use HasFillableRelations;
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'text',

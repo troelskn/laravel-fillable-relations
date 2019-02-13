@@ -9,6 +9,7 @@ class CreatePoly extends Migration
     {
         Schema::create('poly_forums', function (Blueprint $table) {
             $table->increments('id');
+            $table->timestamps();
         });
         Schema::create('poly_title_translations', function (Blueprint $table) {
             $table->increments('id');
@@ -16,6 +17,7 @@ class CreatePoly extends Migration
             $table->integer('translatable_id')->unsigned();
             $table->foreign('translatable_id')->references('id')->on('poly_forums');
             $table->string('translatable_type');
+            $table->timestamps();
         });
     }
 
