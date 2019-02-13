@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use RuntimeException;
 use ReflectionObject;
@@ -70,7 +71,7 @@ trait HasFillableRelations
             $relationType = (new ReflectionObject($relation))->getShortName();
             $method = "fill{$relationType}Relation";
             if (!method_exists($this, $method)) {
-                throw new RuntimeException("Unknown or unfillable relation type {$relationName}");
+                throw new RuntimeException("Unknown or unfillable relation type {$relationType} ({$relationName})");
             }
             $this->{$method}($relation, $attributes, $relationName);
         }
@@ -199,5 +200,34 @@ trait HasFillableRelations
         }
 
         $relation->associate($entity);
+    }
+
+    /**
+     * @param HasMany $relation
+     * @param array $attributes
+     */
+    public function fillMorphManyRelation(MorphMany $relation, array $attributes, $relationName)
+    {
+        if (!$this->exists) {
+            $this->save();
+            $relation = $this->{camel_case($relationName)}();
+        }
+
+        $relation->delete();
+
+        foreach ($attributes as $related) {
+            if (!$related instanceof Model) {
+                if (method_exists($relation, 'getHasCompareKey')) { // Laravel 5.3
+                    $foreign_key = explode('.', $relation->getHasCompareKey());
+                    $related[$foreign_key[1]] = $relation->getParent()->getKey();
+                } else {  // Laravel 5.5+
+                    $related[$relation->getForeignKeyName()] = $relation->getParentKey();
+                }
+                $related = $relation->getRelated()->newInstance($related);
+                $related->exists = $related->getKey() != null;
+            }
+
+            $relation->save($related);
+        }
     }
 }
