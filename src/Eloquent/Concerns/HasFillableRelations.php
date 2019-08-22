@@ -154,7 +154,7 @@ trait HasFillableRelations
                     $related[$relation->getForeignKeyName()] = $relation->getParentKey();
                 }
                 $related = $relation->getRelated()->newInstance($related);
-                $related->exists = $related->getKey() != null;
+                $related->exists = $related->wasRecentlyCreated;
             }
 
             $relation->save($related);
@@ -225,7 +225,7 @@ trait HasFillableRelations
                     $related[$relation->getForeignKeyName()] = $relation->getParentKey();
                 }
                 $related = $relation->getRelated()->newInstance($related);
-                $related->exists = $related->getKey() != null;
+                $related->exists = $related->wasRecentlyCreated;
             }
 
             $relation->save($related);
