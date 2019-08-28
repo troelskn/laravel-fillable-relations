@@ -84,3 +84,16 @@ $bar = new Bar(
     ]
 );
 ```
+
+By default when you pass an empty relations array last state stays unchanged.
+
+In order to automatically remove (detach) empty relations you need to pass
+an optional `$allowEmpty` parameter to either `fill()` or `create()` methods:
+
+```php
+$bar->fill([
+    'foos' => []
+], true); // Detach all relations
+
+$bar->save();
+```
