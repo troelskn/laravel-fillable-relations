@@ -85,15 +85,38 @@ $bar = new Bar(
 );
 ```
 
-By default when you pass an empty relations array last state stays unchanged.
-
-In order to automatically remove (detach) empty relations you need to pass
-an optional `$allowEmpty` parameter to either `fill()` or `create()` methods:
+In order to automatically detach empty relations, pass an empty array:
 
 ```php
 $bar->fill([
-    'foos' => []
-], true); // Detach all relations
+    'foos' => [] // Detach all foos
+]);
 
 $bar->save();
+```
+
+You can use Laravel [validator array rule](https://laravel.com/docs/5.8/validation#rule-array)
+ to preserve empty arrays passed to the request:
+
+```php
+class UpdateRequest extends FormRequest
+{
+    public function rules()
+    {
+        return [
+            'foos' => [
+                'array',
+            ],
+        ];
+    }
+}
+```
+
+And then update attributes and relations in one line in the controller:
+
+```php
+public function update(UpdateRequest $request, Bar $bar)
+{
+    $bar->fill($request->validated())->save();
+}
 ```
