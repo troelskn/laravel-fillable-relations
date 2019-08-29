@@ -49,16 +49,13 @@ trait HasFillableRelations
         return isset($this->fillable_relations) ? $this->fillable_relations : [];
     }
 
-    public function extractFillableRelations(array $attributes, bool $allowEmpty = false)
+    public function extractFillableRelations(array $attributes)
     {
         $relationsAttributes = [];
 
         foreach ($this->fillableRelations() as $relationName) {
             $val = array_pull($attributes, $relationName);
-            
-            $isEmpty = is_array($val) ? $allowEmpty && empty($val) : false;
-            
-            if ($val || $isEmpty) {
+            if ($val) {
                 $relationsAttributes[$relationName] = $val;
             }
         }
@@ -80,9 +77,9 @@ trait HasFillableRelations
         }
     }
 
-    public function fill(array $attributes, bool $allowEmpty = false)
+    public function fill(array $attributes)
     {
-        list($relations, $attributes) = $this->extractFillableRelations($attributes, $allowEmpty);
+        list($relations, $attributes) = $this->extractFillableRelations($attributes);
 
         parent::fill($attributes);
 
@@ -91,9 +88,9 @@ trait HasFillableRelations
         return $this;
     }
 
-    public static function create(array $attributes = [], bool $allowEmpty = false)
+    public static function create(array $attributes = [])
     {
-        list($relations, $attributes) = (new static)->extractFillableRelations($attributes, $allowEmpty);
+        list($relations, $attributes) = (new static)->extractFillableRelations($attributes);
 
         $model = new static($attributes);
         $model->fillRelations($relations);
