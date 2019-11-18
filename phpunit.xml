@@ -8,8 +8,7 @@
 	convertNoticesToExceptions="true"
 	convertWarningsToExceptions="true"
 	processIsolation="false"
-	stopOnFailure="true"
-	syntaxCheck="false">
+	stopOnFailure="true">
   <testsuites>
 	<testsuite name="Fillable Relations Test Suite">
 	  <directory suffix=".php">./tests/</directory>
