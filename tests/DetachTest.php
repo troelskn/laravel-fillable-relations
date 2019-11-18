@@ -9,7 +9,7 @@ class DetachTests extends TestCase
 {
     protected $vehicle;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
