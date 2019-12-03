@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use RuntimeException;
 use ReflectionObject;
 
@@ -54,7 +56,7 @@ trait HasFillableRelations
         $relationsAttributes = [];
 
         foreach ($this->fillableRelations() as $relationName) {
-            $val = array_pull($attributes, $relationName);
+            $val = Arr::pull($attributes, $relationName);
             if ($val !== null) {
                 $relationsAttributes[$relationName] = $val;
             }
@@ -66,7 +68,7 @@ trait HasFillableRelations
     public function fillRelations(array $relations)
     {
         foreach ($relations as $relationName => $attributes) {
-            $relation = $this->{camel_case($relationName)}();
+            $relation = $this->{Str::camel($relationName)}();
 
             $relationType = (new ReflectionObject($relation))->getShortName();
             $method = "fill{$relationType}Relation";
@@ -140,7 +142,7 @@ trait HasFillableRelations
     {
         if (!$this->exists) {
             $this->save();
-            $relation = $this->{camel_case($relationName)}();
+            $relation = $this->{Str::camel($relationName)}();
         }
 
         $relation->delete();
@@ -169,7 +171,7 @@ trait HasFillableRelations
     {
         if (!$this->exists) {
             $this->save();
-            $relation = $this->{camel_case($relationName)}();
+            $relation = $this->{Str::camel($relationName)}();
         }
 
         $relation->detach();
@@ -211,7 +213,7 @@ trait HasFillableRelations
     {
         if (!$this->exists) {
             $this->save();
-            $relation = $this->{camel_case($relationName)}();
+            $relation = $this->{Str::camel($relationName)}();
         }
 
         $relation->delete();
