@@ -42,12 +42,25 @@ class DetachTests extends TestCase
         $this->assertEquals(0, count($this->vehicle->wheels->toArray()));
     }
 
-    public function testDoNothingWithNullValue()
+    public function testDetachWithNullValue()
     {
         $this->assertEquals(4, count($this->vehicle->wheels->toArray()));
 
         $this->vehicle->fill([
             'wheels' => null,
+        ])->save();
+
+        $this->vehicle = Vehicle::find($this->vehicle->id);
+
+        $this->assertEquals(0, count($this->vehicle->wheels->toArray()));
+    }
+
+    public function testDoNothingWithAbsentValue()
+    {
+        $this->assertEquals(4, count($this->vehicle->wheels->toArray()));
+
+        $this->vehicle->fill([
+            'engine' => ['horsepower' => 245],
         ])->save();
 
         $this->vehicle = Vehicle::find($this->vehicle->id);

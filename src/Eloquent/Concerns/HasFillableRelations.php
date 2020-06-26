@@ -56,9 +56,8 @@ trait HasFillableRelations
         $relationsAttributes = [];
 
         foreach ($this->fillableRelations() as $relationName) {
-            $val = Arr::pull($attributes, $relationName);
-            if ($val !== null) {
-                $relationsAttributes[$relationName] = $val;
+            if (Arr::has($attributes, $relationName)) {
+                $relationsAttributes[$relationName] = Arr::pull($attributes, $relationName);
             }
         }
 

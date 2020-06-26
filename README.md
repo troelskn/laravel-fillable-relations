@@ -85,11 +85,12 @@ $bar = new Bar(
 );
 ```
 
-In order to automatically detach empty relations, pass an empty array:
+In order to automatically detach empty relations, pass an empty array or null:
 
 ```php
 $bar->fill([
-    'foos' => [] // Detach all foos
+    'foos' => [], // Detach all foos
+    'baz' => null // Detach the single attached baz
 ]);
 
 $bar->save();
