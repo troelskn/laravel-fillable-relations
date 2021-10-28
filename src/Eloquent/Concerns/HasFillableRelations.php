@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use RuntimeException;
@@ -203,6 +204,25 @@ trait HasFillableRelations
         }
 
         $relation->associate($entity);
+    }
+
+    /**
+     * @param MorphOne $relation
+     * @param array|Model $attributes
+     */
+    public function fillMorphOneRelation(MorphOne $relation, $attributes, $relationName)
+    {
+        if (!$this->exists) {
+            $this->save();
+            $relation = $this->{Str::camel($relationName)}();
+        }
+
+        $relation->delete();
+
+        $attributes[$relation->getForeignKeyName()] = $relation->getParentKey();
+        $attributes[$relation->getMorphType()] = $relation->getMorphClass();
+
+        $relation->getRelated()->newInstance($attributes);
     }
 
     /**
